@@ -23,6 +23,44 @@ const Canvas = props => {
         ...rest
     } = props;
     useEffect(() => {
+        document.addEventListener('keydown', keyPressDown, false);
+        document.addEventListener('keyup', keyPressUp, false);
+
+        function keyPressDown(e) {
+            console.log(e)
+            switch(e.key) {
+                case "ArrowDown":
+                    arrows.downArrow.color = "red";
+                    break;
+                case "ArrowUp":
+                    arrows.upArrow.color = "red";
+                    break;
+                case "ArrowLeft":
+                    arrows.leftArrow.color = "red";
+                    break;
+                case "ArrowRight":
+                    arrows.rightArrow.color = "red";
+                    break;
+                default:
+                    break;
+            }
+        }
+        function keyPressUp(e) {
+            switch(e.key) {
+                case "ArrowDown":
+                    arrows.downArrow.color = "white";
+                    break;
+                case "ArrowUp":
+                    arrows.upArrow.color = "white";
+                    break;
+                case "ArrowLeft":
+                    arrows.leftArrow.color = "white";
+                    break;
+                case "ArrowRight":
+                    arrows.rightArrow.color = "white";
+                    break;
+            }
+        }
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
         /* ideas
@@ -33,30 +71,32 @@ const Canvas = props => {
             then we can just call that whenever we detect drums and add to queue
             then we have a renderer class that pops from queue and renders it ?
         */
-        const leftTarget = new Ball({
-            ctx: context,
-            x: (canvas.width/6),
-            y: 0,
-            color: "#FF0000"
-        });
-        const upTarget = new Ball({
-            ctx: context,
-            x: (canvas.width/6) * 2,
-            y: 0,
-            color: "#FF0000"
-        });
-        const downTarget = new Ball({
-            ctx: context,
-            x: (canvas.width/6)*3,
-            y: 0,
-            color: "#FF0000"
-        });
-        const rightTarget = new Ball({
-            ctx: context,
-            x: (canvas.width/6)*4,
-            y: 0,
-            color: "#FF0000"
-        });
+        const targets = {
+            leftTarget: new Ball({
+                ctx: context,
+                x: (canvas.width/6),
+                y: 0,
+                color: "#FF0000"
+            }),
+            upTarget: new Ball({
+                ctx: context,
+                x: (canvas.width/6) * 2,
+                y: 0,
+                color: "#FF0000"
+            }),
+            downTarget: new Ball({
+                ctx: context,
+                x: (canvas.width/6)*3,
+                y: 0,
+                color: "#FF0000"
+            }),
+            rightTarget: new Ball({
+                ctx: context,
+                x: (canvas.width/6)*4,
+                y: 0,
+                color: "#FF0000"
+            })
+        }
         
         const arrows = {
             leftArrow: new Ball({
@@ -87,29 +127,17 @@ const Canvas = props => {
         
     function animate() {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        // draw targets
-        leftTarget.draw();
-        upTarget.draw();
-        downTarget.draw();
-        rightTarget.draw();
-
-        // draw arrows that go to targets
-        arrows.leftArrow.draw();
-        arrows.upArrow.draw();
-        arrows.downArrow.draw();
-        arrows.rightArrow.draw();
-
-        arrows.leftArrow.y += arrowVelocity;
-        arrows.upArrow.y += arrowVelocity;
-        arrows.downArrow.y += arrowVelocity;
-        arrows.rightArrow.y += arrowVelocity;
-        for (const [arrowName, arrowObject] of Object.entries(arrows)) {
+        for (const [_, targetObject] of Object.entries(targets)) {
+            targetObject.draw();
+        }
+        for (const [_, arrowObject] of Object.entries(arrows)) {
+            arrowObject.draw();
+            arrowObject.y += arrowVelocity;
             if (arrowObject.y < 0) {
                 arrowObject.y = canvas.height;
             }
         }
     }
-
     setInterval(animate, 10);
     }, []);
 
@@ -125,5 +153,4 @@ const Canvas = props => {
     }
     />
 }
-
 export default Canvas;
