@@ -99,10 +99,15 @@ const Canvas = props => {
         arrows.downArrow.draw();
         arrows.rightArrow.draw();
 
-        leftArrow.y += arrowVelocity;
-        upArrow.y += arrowVelocity;
-        downArrow.y += arrowVelocity;
-        rightArrow.y += arrowVelocity;
+        arrows.leftArrow.y += arrowVelocity;
+        arrows.upArrow.y += arrowVelocity;
+        arrows.downArrow.y += arrowVelocity;
+        arrows.rightArrow.y += arrowVelocity;
+        for (const [arrowName, arrowObject] of Object.entries(arrows)) {
+            if (arrowObject.y < 0) {
+                arrowObject.y = canvas.height;
+            }
+        }
     }
 
     setInterval(animate, 10);
