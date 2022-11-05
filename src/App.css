@@ -1,0 +1,10 @@
+body {
+  display: flex;
+  justify-content: center;
+  background-color: rgb(56, 52, 100);
+}
+p {
+  display: flex;
+  justify-content: center;
+  font-size: 30px;
+}
