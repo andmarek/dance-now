@@ -20,7 +20,7 @@ function App() {
   return (
     <div className="App">
       <p> JS Revolution </p>
-      <Canvas draw={draw} height={576} width={1024}/>
+      <Canvas draw={draw} height={576} width={1200}/>
     </div>
   );
 }
