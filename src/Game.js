@@ -11,13 +11,24 @@ import {
 const arrowVelocity = -2;
 const screenOffsetY = 50;
 let gameScore = 0;
-console.log("component")
+
 const Game = props => {
     console.log("Start of game");
     const [score, setScore] = useState(gameScore);
     const canvasRef = useRef();
     const {} = props;
 
+    function handleArrowPress(targetArrow, incomingArrow, currentScore) {
+        targetArrow.color = "blue";
+        if (targetArrow.y - incomingArrow.y > 50) {
+            let newScore = currentScore;
+            newScore++;
+            setScore(newScore);
+        }
+    }
+    /* 
+        let's you perform side effects in function components 
+    */
     useEffect(() => {
         document.addEventListener('keydown', keyPressDown, false);
         document.addEventListener('keyup', keyPressUp, false);
@@ -25,34 +36,16 @@ const Game = props => {
         function keyPressDown(e) {
             switch (e.key) {
                 case "ArrowDown":
-                    arrows.downArrow.color = "red";
-                    if (arrows.downArrow.y - targets.downTarget.y < 50) {
-                        console.log("DOWN GOT HIT");
-                        let newScore = gameScore;
-                        gameScore+=2;
-                        setScore(newScore);
-                    }
+                    handleArrowPress(targets.downTarget, arrows.downArrow, score);
                     break;
                 case "ArrowUp":
-                    arrows.upArrow.color = "red";
-                    if (arrows.upArrow.y == targets.upTarget.y) {
-                        console.log("UP GOT HIT");
-                        let newScore = score;
-                        newScore+=2;
-                        setScore(newScore);
-                    }
+                    handleArrowPress(targets.upTarget, arrows.downArrow, score);
                     break;
                 case "ArrowLeft":
-                    arrows.leftArrow.color = "red";
-                    if (arrows.leftArrow.y == targets.leftTarget.y) {
-                        score++;
-                    }
+                    handleArrowPress(targets.leftTarget, arrows.leftArrow, score);
                     break;
                 case "ArrowRight":
-                    arrows.rightArrow.color = "red";
-                    if (arrows.rightArrow.y == targets.rightTarget.y) {
-                        score++;
-                    }
+                    handleArrowPress(targets.rightTarget, arrows.rightArrow, score);
                     break;
                 default:
                     break;
@@ -62,16 +55,16 @@ const Game = props => {
         function keyPressUp(e) {
             switch (e.key) {
                 case "ArrowDown":
-                    arrows.downArrow.color = "white";
+                    targets.downTarget.color = "red";
                     break;
                 case "ArrowUp":
-                    arrows.upArrow.color = "white";
+                    targets.upTarget.color = "red";
                     break;
                 case "ArrowLeft":
-                    arrows.leftArrow.color = "white";
+                    targets.leftTarget.color = "red";
                     break;
                 case "ArrowRight":
-                    arrows.rightArrow.color = "white";
+                    targets.rightTarget.color = "red";
                     break;
                 default:
                     break;
@@ -79,6 +72,7 @@ const Game = props => {
         }
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
+        let targets = generateTargets();
         /* ideas
             could we put these into a queue
             then have a class arrow
@@ -87,34 +81,37 @@ const Game = props => {
             then we can just call that whenever we detect drums and add to queue
             then we have a renderer class that pops from queue and renders it ?
         */
-        const targets = {
-            leftTarget: new Arrow({
-                ctx: context,
-                x: (canvas.width / 6),
-                y: screenOffsetY,
-                color: "#FF0000"
-            }),
-            upTarget: new Arrow({
-                ctx: context,
-                x: (canvas.width / 6) * 4,
-                y: screenOffsetY,
-                color: "#FF0000"
-            }),
-            downTarget: new Arrow({
-                ctx: context,
-                x: (canvas.width / 6) * 3,
-                y: screenOffsetY,
-                color: "#FF0000"
-            }),
-            rightTarget: new Arrow({
-                ctx: context,
-                x: (canvas.width / 6) * 2,
-                y: screenOffsetY,
-                color: "#FF0000"
-            })
+        function generateTargets() {
+            return {
+                leftTarget: new Arrow({
+                    ctx: context,
+                    x: (canvas.width / 6),
+                    y: screenOffsetY,
+                    color: "#FF0000"
+                }),
+                upTarget: new Arrow({
+                    ctx: context,
+                    x: (canvas.width / 6) * 2,
+                    y: screenOffsetY,
+                    color: "#FF0000"
+                }),
+                downTarget: new Arrow({
+                    ctx: context,
+                    x: (canvas.width / 6) * 3,
+                    y: screenOffsetY,
+                    color: "#FF0000"
+                }),
+                rightTarget: new Arrow({
+                    ctx: context,
+                    x: (canvas.width / 6) * 4,
+                    y: screenOffsetY,
+                    color: "#FF0000"
+                })
+            }
         }
-
-        /* TODO: fix math on these. Can we make arrow generation easy? */
+        /* TODO: generate these "randomly" at some point / right function
+            to generate them instead of statically putting them in code like this.
+        */
         const arrows = {
             leftArrow: new Arrow({
                 ctx: context,
@@ -124,7 +121,7 @@ const Game = props => {
             }),
             rightArrow: new Arrow({
                 ctx: context,
-                x: (canvas.width / 6) * 4,
+                x: (canvas.width / 6) * 2,
                 y: canvas.height,
                 color: "#F0FFFF"
             }),
@@ -136,7 +133,7 @@ const Game = props => {
             }),
             upArrow: new Arrow({
                 ctx: context,
-                x: (canvas.width / 6) * 2,
+                x: (canvas.width / 6) * 4,
                 y: canvas.height,
                 color: "#F0FFFF"
             })
