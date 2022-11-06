@@ -31,7 +31,10 @@ As stated, this is a work in progress.  I'm horrible at ReactJS, so this is goin
         - Will generate the "Arrow component"
     - Game can read generation files
 
-## Goals
+# Milestones / Goals
+- Core of game done (currently in progress)
+- Arrow generator works
+- We can play one song
 
 # Contributing
 Feel free to make an fork / make an MR!
