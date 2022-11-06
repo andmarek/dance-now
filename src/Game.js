@@ -5,9 +5,10 @@ import {
     useState
 } from 'react';
 import {
-    Arrow
+    Arrow, ArrowTypes
 } from "./Arrow"
 
+const arrowBufferPx = 50;
 const arrowVelocity = -2;
 const screenOffsetY = 50;
 let gameScore = 0;
@@ -17,35 +18,45 @@ const Game = props => {
     const [score, setScore] = useState(gameScore);
     const canvasRef = useRef();
     const {} = props;
+    
 
-    function handleArrowPress(targetArrow, incomingArrow, currentScore) {
-        targetArrow.color = "blue";
-        if (targetArrow.y - incomingArrow.y > 50) {
-            let newScore = currentScore;
-            newScore++;
-            setScore(newScore);
-        }
-    }
-    /* 
-        let's you perform side effects in function components 
-    */
+    // since we're gonna use a random amount of arrows, we should instead 
+    //  when an incoming arrow gets to the "space" where it needs to be pressed,
+    // we can have global state like "keydown" and if keydown when it's on the spot,
+    // increase the score
+    // so now the arrows are asking for game state 
+    // instead of gamestate asking for arrows
+    // then we can change from dict to just list of arrows we're generating
     useEffect(() => {
+        function handleArrowPress(targetArrow, incomingArrow) {
+            targetArrow.color = "blue";
+            console.log(targetArrow.y);
+            console.log(incomingArrow.y);
+            if (targetArrow.y - incomingArrow.y <= arrowBufferPx) {
+                gameScore++;
+                setScore(gameScore);
+            }
+        }
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+        let targets = generateTargets();
+
         document.addEventListener('keydown', keyPressDown, false);
         document.addEventListener('keyup', keyPressUp, false);
 
         function keyPressDown(e) {
             switch (e.key) {
                 case "ArrowDown":
-                    handleArrowPress(targets.downTarget, arrows.downArrow, score);
+                    handleArrowPress(targets.downTarget, incomingArrows.downArrow, score);
                     break;
                 case "ArrowUp":
-                    handleArrowPress(targets.upTarget, arrows.downArrow, score);
+                    handleArrowPress(targets.upTarget, incomingArrows.downArrow, score);
                     break;
                 case "ArrowLeft":
-                    handleArrowPress(targets.leftTarget, arrows.leftArrow, score);
+                    handleArrowPress(targets.leftTarget, incomingArrows.leftArrow, score);
                     break;
                 case "ArrowRight":
-                    handleArrowPress(targets.rightTarget, arrows.rightArrow, score);
+                    handleArrowPress(targets.rightTarget, incomingArrows.rightArrow, score);
                     break;
                 default:
                     break;
@@ -70,9 +81,7 @@ const Game = props => {
                     break;
             }
         }
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
-        let targets = generateTargets();
+        
         /* ideas
             could we put these into a queue
             then have a class arrow
@@ -112,26 +121,30 @@ const Game = props => {
         /* TODO: generate these "randomly" at some point / right function
             to generate them instead of statically putting them in code like this.
         */
-        const arrows = {
+        const incomingArrows = {
             leftArrow: new Arrow({
+                arrowTypetype: ArrowTypes.LEFT,
                 ctx: context,
                 x: (canvas.width / 6),
                 y: canvas.height,
                 color: "#F0FFFF"
             }),
             rightArrow: new Arrow({
+                arrowTypetype: ArrowTypes.RIGHT,
                 ctx: context,
                 x: (canvas.width / 6) * 2,
                 y: canvas.height,
                 color: "#F0FFFF"
             }),
             downArrow: new Arrow({
+                arrowTypetype: ArrowTypes.DOWN,
                 ctx: context,
                 x: (canvas.width / 6) * 3,
                 y: canvas.height,
                 color: "#F0FFFF"
             }),
             upArrow: new Arrow({
+                arrowTypetype: ArrowTypes.UP,
                 ctx: context,
                 x: (canvas.width / 6) * 4,
                 y: canvas.height,
@@ -145,7 +158,7 @@ const Game = props => {
             for (const [_, targetObject] of Object.entries(targets)) {
                 targetObject.draw();
             }
-            for (const [_, arrowObject] of Object.entries(arrows)) {
+            for (const [_, arrowObject] of Object.entries(incomingArrows)) {
                 arrowObject.draw();
                 arrowObject.y += arrowVelocity;
                 if (arrowObject.y < 0) {

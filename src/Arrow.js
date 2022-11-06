@@ -1,9 +1,17 @@
+export const ArrowTypes = {
+    UP: "Up",
+    DOWN: "Down",
+    LEFT: "Left",
+    RIGHT: "Right"
+}
+
 export class Arrow { 
-    constructor({ctx, x, y, color}) {
+    constructor({ctx, x, y, color, arrowType}) {
         this.x = x;
         this.y = y;
         this.ctx = ctx;
         this.color = color;
+        this.arrowType = arrowType;
     }
 
     draw() { 

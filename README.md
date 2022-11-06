@@ -1,4 +1,4 @@
-# Dance Now, a rhythm focused game built in React
+# Dance Now - a rhythm focused game built in React
 
 Have you ever wanted to play Flash Flash Revolution or some rhythm-based game on your Mac? Now that Flash is gone, you can't play that game in the browser.  AND since you bought that $3000 MacBookk, you can't run .exe files!  Oh no!! How can you keep your 1337 keyboard pressing skills??? :(
 
