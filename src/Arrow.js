@@ -1,8 +1,8 @@
 export const ArrowTypes = {
-    UP: 1,
-    DOWN: 2,
-    LEFT: 3,
-    RIGHT: 4
+    UP: "Up",
+    DOWN: "Down",
+    LEFT: "Left",
+    RIGHT: "Right" 
 }
 
 export class Arrow { 
@@ -22,6 +22,3 @@ export class Arrow {
     }
 }
 
-export function createRightArrow() {
-
-}
