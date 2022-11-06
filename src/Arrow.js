@@ -1,8 +1,8 @@
 export const ArrowTypes = {
-    UP: "Up",
-    DOWN: "Down",
-    LEFT: "Left",
-    RIGHT: "Right"
+    UP: 1,
+    DOWN: 2,
+    LEFT: 3,
+    RIGHT: 4
 }
 
 export class Arrow { 
@@ -20,4 +20,8 @@ export class Arrow {
         this.ctx.fillStyle = this.color;
         this.ctx.fill();
     }
+}
+
+export function createRightArrow() {
+
 }

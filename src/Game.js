@@ -12,6 +12,7 @@ const arrowBufferPx = 50;
 const arrowVelocity = -5;
 const screenOffsetY = 50;
 let gameScore = 0;
+let ticks = 0;;
 
 const Game = props => {
     console.log("Start of game");
@@ -120,52 +121,53 @@ const Game = props => {
         /* TODO: generate these "randomly" at some point / right function
             to generate them instead of statically putting them in code like this.
         */
+        const generatedIncomingArrows = [];
+        function generateIncomingArrows() {
+            const max = 4;
+            const min = 1;
+
+            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;            
+            let generatedArrow = null;
+            if (ticks % 100 == 0) {
+                switch (randomNumber) {
+                    case 1:
+                        generatedArrow = createLeftArrow(context, canvas, "white");
+                        break;
+                    case 2:
+                        generatedArrow = createUpArrow(context, canvas, "white");
+                        break;
+                    case 3:
+                        generatedArrow = createDownArrow(context, canvas, "white");
+                        break;
+                    case 4:
+                        generatedArrow = createRightArrow(context, canvas, "white");
+                        break;
+                }
+                generatedIncomingArrows.push(generatedArrow);
+                console.log('rpinting arrow' + randomNumber)
+            }
+        }
+
         const incomingArrows = {
-            leftArrow: new Arrow({
-                arrowTypetype: ArrowTypes.LEFT,
-                ctx: context,
-                x: 400,
-                y: canvas.height,
-                color: "#F0FFFF"
-            }),
-            upArrow: new Arrow({
-                arrowTypetype: ArrowTypes.UP,
-                ctx: context,
-                x: 500,
-                y: canvas.height,
-                color: "#F0FFFF"
-            }),
-            downArrow: new Arrow({
-                arrowTypetype: ArrowTypes.DOWN,
-                ctx: context,
-                x: 600,
-                y: canvas.height,
-                color: "#F0FFFF"
-            }),
-            rightArrow: new Arrow({
-                arrowTypetype: ArrowTypes.RIGHT,
-                ctx: context,
-                x: 700,
-                y: canvas.height,
-                color: "#F0FFFF"
-            })
+            leftArrow: createLeftArrow(context, canvas, "white"),
+            upArrow: createUpArrow(context, canvas, "white"),
+            downArrow: createDownArrow(context, canvas, "white"),
+            rightArrow: createRightArrow(context, canvas, "white") 
         }
 
         function animate() {
+            generateIncomingArrows();
             context.clearRect(0, 0, canvas.width, canvas.height);
             
             for (const [_, targetObject] of Object.entries(targets)) {
                 targetObject.draw();
             }
-            for (const [_, arrowObject] of Object.entries(incomingArrows)) {
+            for (const arrowObject of generatedIncomingArrows) {
                 arrowObject.draw();
                 arrowObject.y += arrowVelocity;
-                if (arrowObject.y < 0) {
-                    arrowObject.y = canvas.height;
-                }
             }
+            ticks++; 
         }
-        
         setInterval(animate, 10);
     }, []);
 
@@ -181,5 +183,42 @@ const Game = props => {
     }
     /> <p> Score: {score}</p > </div>
 
+}
+
+function createLeftArrow(context, canvas, color) {
+    return new Arrow({
+        arrowTypetype: ArrowTypes.LEFT,
+        ctx: context,
+        x: 400,
+        y: canvas.height,
+        color: color
+    })
+}
+function createDownArrow(context, canvas, color) {
+    return new Arrow({
+        arrowTypetype: ArrowTypes.LEFT,
+        ctx: context,
+        x: 600,
+        y: canvas.height,
+        color: color
+    })
+}
+function createUpArrow(context, canvas, color) {
+    return new Arrow({
+        arrowTypetype: ArrowTypes.LEFT,
+        ctx: context,
+        x: 500,
+        y: canvas.height,
+        color: color 
+    })
+}
+function createRightArrow(context, canvas, color) {
+    return new Arrow({
+        arrowTypetype: ArrowTypes.LEFT,
+        ctx: context,
+        x: 700,
+        y: canvas.height,
+        color: color
+    })
 }
 export default Game;
