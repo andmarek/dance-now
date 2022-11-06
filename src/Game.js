@@ -9,7 +9,7 @@ import {
 } from "./Arrow"
 
 const arrowBufferPx = 50;
-const arrowVelocity = -2;
+const arrowVelocity = -5;
 const screenOffsetY = 50;
 let gameScore = 0;
 
@@ -30,9 +30,8 @@ const Game = props => {
     useEffect(() => {
         function handleArrowPress(targetArrow, incomingArrow) {
             targetArrow.color = "blue";
-            console.log(targetArrow.y);
-            console.log(incomingArrow.y);
-            if (targetArrow.y - incomingArrow.y <= arrowBufferPx) {
+            if ((incomingArrow.y - targetArrow.y <= arrowBufferPx) && (incomingArrow.y - targetArrow.y >= 5)) {
+                console.log("buffer" + (targetArrow.y - incomingArrow.y))
                 gameScore++;
                 setScore(gameScore);
             }
@@ -94,25 +93,25 @@ const Game = props => {
             return {
                 leftTarget: new Arrow({
                     ctx: context,
-                    x: (canvas.width / 6),
+                    x: 400,
                     y: screenOffsetY,
                     color: "#FF0000"
                 }),
                 upTarget: new Arrow({
                     ctx: context,
-                    x: (canvas.width / 6) * 2,
+                    x: 500,
                     y: screenOffsetY,
                     color: "#FF0000"
                 }),
                 downTarget: new Arrow({
                     ctx: context,
-                    x: (canvas.width / 6) * 3,
+                    x: 600,
                     y: screenOffsetY,
                     color: "#FF0000"
                 }),
                 rightTarget: new Arrow({
                     ctx: context,
-                    x: (canvas.width / 6) * 4,
+                    x: 700,
                     y: screenOffsetY,
                     color: "#FF0000"
                 })
@@ -125,28 +124,28 @@ const Game = props => {
             leftArrow: new Arrow({
                 arrowTypetype: ArrowTypes.LEFT,
                 ctx: context,
-                x: (canvas.width / 6),
-                y: canvas.height,
-                color: "#F0FFFF"
-            }),
-            rightArrow: new Arrow({
-                arrowTypetype: ArrowTypes.RIGHT,
-                ctx: context,
-                x: (canvas.width / 6) * 2,
-                y: canvas.height,
-                color: "#F0FFFF"
-            }),
-            downArrow: new Arrow({
-                arrowTypetype: ArrowTypes.DOWN,
-                ctx: context,
-                x: (canvas.width / 6) * 3,
+                x: 400,
                 y: canvas.height,
                 color: "#F0FFFF"
             }),
             upArrow: new Arrow({
                 arrowTypetype: ArrowTypes.UP,
                 ctx: context,
-                x: (canvas.width / 6) * 4,
+                x: 500,
+                y: canvas.height,
+                color: "#F0FFFF"
+            }),
+            downArrow: new Arrow({
+                arrowTypetype: ArrowTypes.DOWN,
+                ctx: context,
+                x: 600,
+                y: canvas.height,
+                color: "#F0FFFF"
+            }),
+            rightArrow: new Arrow({
+                arrowTypetype: ArrowTypes.RIGHT,
+                ctx: context,
+                x: 700,
                 y: canvas.height,
                 color: "#F0FFFF"
             })
