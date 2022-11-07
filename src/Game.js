@@ -1,3 +1,7 @@
+/*
+TODO: https://stackoverflow.com/questions/46138145/where-should-functions-in-function-components-go#:~:text=In%20most%20cases%20you%20should,function%20will%20be%20defined%20again.
+*/
+
 import {
     React,
     useRef,
@@ -5,7 +9,8 @@ import {
     useState
 } from 'react';
 import {
-    Arrow, ArrowTypes
+    Arrow,
+    ArrowTypes
 } from "./Arrow"
 
 const arrowBufferPx = 100;
@@ -19,19 +24,16 @@ function isClose(targetY, incomingY) {
 }
 
 const Game = props => {
-    console.log("Start of game");
     const [score, setScore] = useState(gameScore);
     const canvasRef = useRef();
     const {} = props;
-    
+
     useEffect(() => {
         function handleArrowPress(targetArrow) {
             targetArrow.color = "blue";
             for (let arrowObject of generatedIncomingArrows) {
                 if (arrowObject.arrowType == targetArrow.arrowType) {
-                    console.log("same arrow type")
                     if (isClose(targetArrow.y, arrowObject.y)) {
-                        console.log("was close!")
                         gameScore++;
                         setScore(gameScore);
                     }
@@ -40,6 +42,12 @@ const Game = props => {
         }
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
+
+        /*
+        let img = document.getElementById("myImage");
+        context.drawImage(img, 10, 30);
+        */
+
         let targets = generateTargets();
 
         document.addEventListener('keydown', keyPressDown, false);
@@ -82,7 +90,7 @@ const Game = props => {
                     break;
             }
         }
-       
+
         function generateTargets() {
             return {
                 leftTarget: new Arrow({
@@ -119,11 +127,12 @@ const Game = props => {
             to generate them instead of statically putting them in code like this.
         */
         const generatedIncomingArrows = [];
+
         function generateIncomingArrows() {
             const max = 4;
             const min = 1;
 
-            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;            
+            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
             let generatedArrow = null;
             if (ticks % 100 == 0) {
                 switch (randomNumber) {
@@ -141,14 +150,13 @@ const Game = props => {
                         break;
                 }
                 generatedIncomingArrows.push(generatedArrow);
-                console.log('rpinting arrow' + randomNumber)
             }
         }
 
         function animate() {
             generateIncomingArrows();
             context.clearRect(0, 0, canvas.width, canvas.height);
-            
+
             for (const [_, targetObject] of Object.entries(targets)) {
                 targetObject.draw();
             }
@@ -156,23 +164,17 @@ const Game = props => {
                 arrowObject.draw();
                 arrowObject.y += arrowVelocity;
             }
-            ticks++; 
+            ticks++;
         }
         setInterval(animate, 10);
     }, []);
 
-    return <div > < canvas style = {
-        {
-            background: "black"
-        }
-    }
-    ref = {
-        canvasRef
-    } {
-        ...props
-    }
-    /> <p> Score: {score}</p > </div>
-
+    return ( 
+        <div> 
+            <canvas style={{background: "black"}} ref={canvasRef} {...props}/>
+            <p> Score: {score}</p > 
+        </div>
+    )
 }
 
 function createLeftArrow(context, canvas, color) {
@@ -184,6 +186,7 @@ function createLeftArrow(context, canvas, color) {
         color: color
     })
 }
+
 function createDownArrow(context, canvas, color) {
     return new Arrow({
         arrowType: ArrowTypes.DOWN,
@@ -193,15 +196,17 @@ function createDownArrow(context, canvas, color) {
         color: color
     })
 }
+
 function createUpArrow(context, canvas, color) {
     return new Arrow({
         arrowType: ArrowTypes.UP,
         ctx: context,
         x: 600,
         y: canvas.height,
-        color: color 
+        color: color
     })
 }
+
 function createRightArrow(context, canvas, color) {
     return new Arrow({
         arrowType: ArrowTypes.RIGHT,
