@@ -18,6 +18,12 @@ const arrowVelocity = -10;
 const screenOffsetY = 50;
 let gameScore = 0;
 let ticks = 0;
+const numToCreateArrowMap = {
+    "1": createLeftArrow,
+    "2": createDownArrow,
+    "3": createUpArrow,
+    "4": createDownArrow
+}
 
 function isClose(targetY, incomingY) {
     return (incomingY - targetY <= arrowBufferPx) && (incomingY - targetY >= 5)
@@ -44,8 +50,8 @@ const Game = props => {
         const context = canvas.getContext('2d');
 
         /*
-        let img = document.getElementById("myImage");
-        context.drawImage(img, 10, 30);
+            let img = document.getElementById("myImage");
+            context.drawImage(img, 10, 30);
         */
 
         let targets = generateTargets();
@@ -128,28 +134,25 @@ const Game = props => {
         */
         const generatedIncomingArrows = [];
 
+        // generate random amount thing 
         function generateIncomingArrows() {
             const max = 4;
             const min = 1;
 
-            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            const numberOfArrows = Math.floor(Math.random() * (max - min + 1)) + min;
+            let arrowTuple = [];
+
+            for (let i = 0; i < numberOfArrows; i++) {
+                const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min
+                arrowTuple.push(randomNumber);
+            }
+
             let generatedArrow = null;
             if (ticks % 100 == 0) {
-                switch (randomNumber) {
-                    case 1:
-                        generatedArrow = createLeftArrow(context, canvas, "white");
-                        break;
-                    case 2:
-                        generatedArrow = createUpArrow(context, canvas, "white");
-                        break;
-                    case 3:
-                        generatedArrow = createDownArrow(context, canvas, "white");
-                        break;
-                    case 4:
-                        generatedArrow = createRightArrow(context, canvas, "white");
-                        break;
-                }
-                generatedIncomingArrows.push(generatedArrow);
+                arrowTuple.forEach((arrowNum) => {
+                    generatedArrow = numToCreateArrowMap[arrowNum](context, canvas, "white");
+                    generatedIncomingArrows.push(generatedArrow);
+                });
             }
         }
 
